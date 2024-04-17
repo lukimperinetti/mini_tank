@@ -29,6 +29,4 @@ function player.draw()
     love.graphics.draw(player.image, player.x, player.y)
 end
 
-print("player")
-
 return player
