@@ -32,10 +32,17 @@ function player.update(dt)
     local dx = player.x - prevX
     local dy = player.y - prevY
 
-    -- If there is movement ~= mean !=
+    -- If there is movement
     if dx ~= 0 or dy ~= 0 then
-        local targetAngle = math.deg(math.atan2(dy, dx)) + 90
-        local lerpFactor = 10 * dt -- Adjust this value to change the speed of rotation
+        local targetAngle = (math.deg(math.atan2(dy, dx)) + 90) % 360
+        if math.abs(targetAngle - player.angle) > 180 then
+            if targetAngle > player.angle then
+                targetAngle = targetAngle - 360
+            else
+                targetAngle = targetAngle + 360
+            end
+        end
+        local lerpFactor = 10 * dt
         player.angle = player.angle + (targetAngle - player.angle) * lerpFactor
     end
 end
