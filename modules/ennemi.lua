@@ -21,13 +21,14 @@ function CreateEnnemi()
     ennemi.image = love.graphics.newImage("src/images/ennemi.png")
     ennemi.x = math.random(10, screenWidth - 10)
     ennemi.y = math.random(10, (screenHeight / 2) - 10)
-    ennemi.speed = 1
+    ennemi.state = TSTATE.NONE
     ennemi.vx = 0
     ennemi.vy = 0
-    ennemi.state = TSTATE.NONE
     ennemi.angle = 0
+    ennemi.speed = 1
 end
 
+-- Update ennemi state
 function UpdateEnnemi(pEnnemi)
     local prevX = pEnnemi.x
     local prevY = pEnnemi.y
@@ -63,19 +64,21 @@ function UpdateEnnemi(pEnnemi)
         pEnnemi.vx = pEnnemi.speed * 60 * math.cos(angle)
         pEnnemi.vy = pEnnemi.speed * 60 * math.sin(angle)
         pEnnemi.state = TSTATE.MOVE
+
+        -- difference between the target angle and the current angle
         local dx = targetX - pEnnemi.x
         local dy = targetY - pEnnemi.y
 
         if dx ~= 0 or dy ~= 0 then
             local targetAngle = (math.deg(math.atan2(dy, dx)) + 270) % 360
-            if math.abs(targetAngle - pEnnemi.angle) > 180 then
+            if math.abs(targetAngle - pEnnemi.angle) > 180 then -- if the angle is greater than 180 degrees to ensure the shortest path
                 if targetAngle > pEnnemi.angle then
                     targetAngle = targetAngle - 360
                 else
                     targetAngle = targetAngle + 360
                 end
             end
-            local lerpFactor = 10 * 0.1
+            local lerpFactor = 10 * 0.1 -- to make the rotation smooth
             pEnnemi.angle = pEnnemi.angle + (targetAngle - pEnnemi.angle) * lerpFactor
         end
     end

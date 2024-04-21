@@ -25,6 +25,9 @@ function sceneGameplay.keypressed(key)
     if key == "space" then
         scenesManager.changeScene('gameplay')
     end
+    if key == "escape" then
+        love.event.quit()
+    end
 end
 
 return sceneGameplay
