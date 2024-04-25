@@ -8,14 +8,22 @@ player.vy = 0
 player.angle = 0
 -- Bullets
 player.bullets = {}
-player.bulletSpeed = 200 -- Corrected here
-player.bulletImage = love.graphics.newImage("src/images/missile.png") -- Corrected here
+player.bulletSpeed = 200
+player.bulletImage = love.graphics.newImage("src/images/missile.png")
 
 function player.load()
     print("player loaded")
 end
 
 function player.shoot()
+    -- if the bullet is still on the screen, don't shoot
+    if #player.bullets > 0 then
+        local lastBullet = player.bullets[#player.bullets]
+        if lastBullet.x > 0 and lastBullet.x < love.graphics.getWidth() and lastBullet.y > 0 and lastBullet.y < love.graphics.getHeight() then
+            return
+        end
+    end
+
     local bullet = {}
     bullet.x = player.x
     bullet.y = player.y
@@ -39,13 +47,13 @@ function player.update(dt)
     if love.keyboard.isDown("z") then
         player.y = player.y - player.speed * dt
     end
-    if love.keyboard.isDown("f") then
+    if love.keyboard.isDown("space") then
         player.shoot()
     end
 
     for i, bullet in ipairs(player.bullets) do
-        bullet.x = bullet.x + player.bulletSpeed * dt * math.cos(bullet.angle) -- Corrected here
-        bullet.y = bullet.y + player.bulletSpeed * dt * math.sin(bullet.angle) -- Corrected here
+        bullet.x = bullet.x + player.bulletSpeed * dt * math.cos(bullet.angle)
+        bullet.y = bullet.y + player.bulletSpeed * dt * math.sin(bullet.angle)
     end
 
     -- Calculate the angle of movement
@@ -73,8 +81,8 @@ function player.draw()
 
     -- Draw the bullets
     for i, bullet in ipairs(player.bullets) do
-        love.graphics.draw(player.bulletImage, bullet.x, bullet.y, math.rad(bullet.angle), 1, 1,
-            player.bulletImage:getWidth() / 2, player.bulletImage:getHeight() / 2) -- Corrected here
+        love.graphics.draw(player.bulletImage, bullet.x, bullet.y, math.rad(bullet.angle), 0.1, 0.1,
+            player.bulletImage:getWidth() / 2, player.bulletImage:getHeight() / 2)
     end
 end
 

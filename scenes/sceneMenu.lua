@@ -20,13 +20,14 @@ function sceneMenu.draw()
 
     -- Set the font and print the text in the center of the screen
     love.graphics.setFont(font)
-    love.graphics.printf('Press "SPACE" to enter the battleground or "ESCAPE" to quit', 0, love.graphics.getHeight() / 2.5,
+    love.graphics.printf('Press "ENTER" to enter the battleground or "ESCAPE" to quit', 0,
+        love.graphics.getHeight() / 2.5,
         love.graphics.getWidth(),
         'center')
 end
 
 function sceneMenu.keypressed(key)
-    if key == "space" then
+    if key == "return" then
         scenesManager.changeScene('gameplay')
     end
     if key == "escape" then
