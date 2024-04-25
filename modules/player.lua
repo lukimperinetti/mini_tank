@@ -6,9 +6,21 @@ player.speed = 50
 player.vx = 0
 player.vy = 0
 player.angle = 0
+-- Bullets
+player.bullets = {}
+player.bulletSpeed = 200 -- Corrected here
+player.bulletImage = love.graphics.newImage("src/images/missile.png") -- Corrected here
 
 function player.load()
     print("player loaded")
+end
+
+function player.shoot()
+    local bullet = {}
+    bullet.x = player.x
+    bullet.y = player.y
+    bullet.angle = player.angle
+    table.insert(player.bullets, bullet)
 end
 
 function player.update(dt)
@@ -26,6 +38,14 @@ function player.update(dt)
     end
     if love.keyboard.isDown("z") then
         player.y = player.y - player.speed * dt
+    end
+    if love.keyboard.isDown("f") then
+        player.shoot()
+    end
+
+    for i, bullet in ipairs(player.bullets) do
+        bullet.x = bullet.x + player.bulletSpeed * dt * math.cos(bullet.angle) -- Corrected here
+        bullet.y = bullet.y + player.bulletSpeed * dt * math.sin(bullet.angle) -- Corrected here
     end
 
     -- Calculate the angle of movement
@@ -50,6 +70,12 @@ end
 function player.draw()
     love.graphics.draw(player.image, player.x, player.y, math.rad(player.angle), 1, 1, player.image:getWidth() / 2,
         player.image:getHeight() / 2)
+
+    -- Draw the bullets
+    for i, bullet in ipairs(player.bullets) do
+        love.graphics.draw(player.bulletImage, bullet.x, bullet.y, math.rad(bullet.angle), 1, 1,
+            player.bulletImage:getWidth() / 2, player.bulletImage:getHeight() / 2) -- Corrected here
+    end
 end
 
 return player

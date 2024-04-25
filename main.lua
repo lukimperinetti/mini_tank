@@ -8,7 +8,6 @@ scenesManager.changeScene('menu')
 
 
 function love.load()
-
 end
 
 function love.update(dt)
