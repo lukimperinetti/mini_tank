@@ -16,18 +16,10 @@ function player.load()
 end
 
 function player.shoot()
-    -- if the bullet is still on the screen, don't shoot
-    if #player.bullets > 0 then
-        local lastBullet = player.bullets[#player.bullets]
-        if lastBullet.x > 0 and lastBullet.x < love.graphics.getWidth() and lastBullet.y > 0 and lastBullet.y < love.graphics.getHeight() then
-            return
-        end
-    end
-
     local bullet = {}
     bullet.x = player.x
     bullet.y = player.y
-    bullet.angle = player.angle
+    bullet.angle = player.angle - 90
     table.insert(player.bullets, bullet)
 end
 
@@ -52,8 +44,8 @@ function player.update(dt)
     end
 
     for i, bullet in ipairs(player.bullets) do
-        bullet.x = bullet.x + player.bulletSpeed * dt * math.cos(bullet.angle)
-        bullet.y = bullet.y + player.bulletSpeed * dt * math.sin(bullet.angle)
+        bullet.x = bullet.x + player.bulletSpeed * dt * math.cos(math.rad(bullet.angle))
+        bullet.y = bullet.y + player.bulletSpeed * dt * math.sin(math.rad(bullet.angle))
     end
 
     -- Calculate the angle of movement
