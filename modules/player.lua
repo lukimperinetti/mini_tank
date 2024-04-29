@@ -6,6 +6,7 @@ player.speed = 50
 player.vx = 0
 player.vy = 0
 player.angle = 0
+player.score = 0
 -- Bullets
 player.bullets = {}
 player.bulletSpeed = 200

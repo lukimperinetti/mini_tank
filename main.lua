@@ -4,7 +4,9 @@ love.graphics.setDefaultFilter("nearest")
 local scenesManager = require("scenes.scenesManager")
 scenesManager.addScenes("menu", "scenes.sceneMenu")
 scenesManager.addScenes("gameplay", "scenes.sceneGameplay")
+scenesManager.addScenes("paused", "scenes.scenePause")
 scenesManager.changeScene('menu')
+-- scenesManager.changeScene('gameplay')
 
 
 function love.load()

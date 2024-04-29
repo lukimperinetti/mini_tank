@@ -16,14 +16,14 @@ function sceneGameplay.update(dt)
 end
 
 function sceneGameplay.draw()
-    love.graphics.print('la scene gameplay')
+    love.graphics.print('Your Score:  ' .. player.score, 10, 10)
     player.draw()
     ennemi.draw()
 end
 
 function sceneGameplay.keypressed(key)
-    if key == "space" then
-        scenesManager.changeScene('gameplay')
+    if key == "p" then
+        scenesManager.changeScene('paused')
     end
     if key == "escape" then
         love.event.quit()
