@@ -82,6 +82,11 @@ function UpdateEnnemi(pEnnemi)
             pEnnemi.angle = pEnnemi.angle + (targetAngle - pEnnemi.angle) * lerpFactor
         end
     end
+    -- Check if the player is off the screen and if so, revert the position
+    if ennemi.x < 0 or ennemi.x > love.graphics.getWidth() or ennemi.y < 0 or ennemi.y > love.graphics.getHeight() then
+        ennemi.x = prevX
+        ennemi.y = prevY
+    end
 end
 
 function ennemi.load()

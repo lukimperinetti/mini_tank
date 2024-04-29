@@ -44,6 +44,12 @@ function player.update(dt)
         player.shoot()
     end
 
+    -- Check if the player is off the screen and if so, revert the position
+    if player.x < 0 or player.x > love.graphics.getWidth() or player.y < 0 or player.y > love.graphics.getHeight() then
+        player.x = prevX
+        player.y = prevY
+    end
+
     for i, bullet in ipairs(player.bullets) do
         bullet.x = bullet.x + player.bulletSpeed * dt * math.cos(math.rad(bullet.angle))
         bullet.y = bullet.y + player.bulletSpeed * dt * math.sin(math.rad(bullet.angle))
