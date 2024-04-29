@@ -16,6 +16,7 @@ function player.load()
     print("player loaded")
 end
 
+-- Function to shoot a bullets
 function player.shoot()
     local bullet = {}
     bullet.x = player.x

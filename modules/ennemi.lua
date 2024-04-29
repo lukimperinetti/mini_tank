@@ -4,6 +4,8 @@ function math.angle(x1, y1, x2, y2) return math.atan2(y2 - y1, x2 - x1) end
 -- Returns the distance between two points
 function math.dist(x1, y1, x2, y2) return ((x2 - x1) ^ 2 + (y2 - y1) ^ 2) ^ 0.5 end
 
+local player = require('modules.player')
+
 local ennemi = {}
 
 -- State machine ennemi
@@ -26,6 +28,19 @@ function CreateEnnemi()
     ennemi.vy = 0
     ennemi.angle = 0
     ennemi.speed = 1
+
+    ennemi.bullets = {}
+    ennemi.bulletSpeed = 200
+    ennemi.bulletImage = love.graphics.newImage("src/images/missile.png")
+end
+
+-- Function to shoot a bullets
+function ennemi.shoot()
+    local dx = player.x - ennemi.x
+    local dy = player.y - ennemi.y
+    local angle = math.atan2(dy, dx)
+
+    table.insert(ennemi.bullets, {x = ennemi.x, y = ennemi.y, angle = angle})
 end
 
 -- Update ennemi state
@@ -56,7 +71,17 @@ function UpdateEnnemi(pEnnemi)
         if collide then
             pEnnemi.state = TSTATE.CHANGEDIR
         end
+
+        if math.dist(pEnnemi.x, pEnnemi.y, player.x, player.y) < 350 then
+            pEnnemi.state = TSTATE.ATTACK
+            print("ennemi attack")
+            ennemi.shoot()
+        end
     elseif pEnnemi.state == TSTATE.ATTACK then
+        if math.dist(pEnnemi.x, pEnnemi.y, player.x, player.y) > 350 then
+            pEnnemi.state = TSTATE.CHANGEDIR
+            print("ennemi changedir")
+        end
     elseif pEnnemi.state == TSTATE.CHANGEDIR then
         local targetX = math.random(10, screenWidth - 10)
         local targetY = math.random(10, screenHeight - 10)
@@ -100,11 +125,22 @@ function ennemi.update(dt)
     UpdateEnnemi(ennemi)
     ennemi.x = ennemi.x + ennemi.vx * dt
     ennemi.y = ennemi.y + ennemi.vy * dt
+    
+    for i, bullet in ipairs(ennemi.bullets) do
+        bullet.x = bullet.x + ennemi.bulletSpeed * dt * math.cos(bullet.angle)
+        bullet.y = bullet.y + ennemi.bulletSpeed * dt * math.sin(bullet.angle)
+    end
 end
 
 function ennemi.draw()
     love.graphics.draw(ennemi.image, ennemi.x, ennemi.y, math.rad(ennemi.angle), 1, 1, ennemi.image:getWidth(),
         ennemi.image:getHeight())
+
+    -- Draw the bullets
+    for i, bullet in ipairs(ennemi.bullets) do
+        love.graphics.draw(ennemi.bulletImage, bullet.x, bullet.y, math.rad(bullet.angle), 0.1, 0.1,
+            ennemi.bulletImage:getWidth() / 2, ennemi.bulletImage:getHeight() / 2)
+    end
 end
 
 return ennemi
