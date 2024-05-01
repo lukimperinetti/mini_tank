@@ -10,6 +10,8 @@ scenesManager.changeScene('menu')
 
 
 function love.load()
+    -- screen size
+    love.window.setMode(1240, 700)
 end
 
 function love.update(dt)

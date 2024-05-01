@@ -21,8 +21,8 @@ TSTATE.DIE = "die"
 -- Create ennemi
 function CreateEnnemi()
     ennemi.image = love.graphics.newImage("src/images/ennemi.png")
-    ennemi.x = math.random(10, screenWidth - 10)
-    ennemi.y = math.random(10, (screenHeight / 2) - 10)
+    ennemi.x = math.random(10 * ennemi.image:getWidth(), love.graphics.getWidth() - 10 * ennemi.image:getWidth())
+    ennemi.y = math.random(10 * ennemi.image:getHeight(), love.graphics.getHeight() - 10 * ennemi.image:getHeight())
     ennemi.state = TSTATE.NONE
     ennemi.vx = 0
     ennemi.vy = 0
