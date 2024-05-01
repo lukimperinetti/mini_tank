@@ -40,7 +40,7 @@ function ennemi.shoot()
     local dy = player.y - ennemi.y
     local angle = math.atan2(dy, dx)
 
-    table.insert(ennemi.bullets, { x = ennemi.x, y = ennemi.y, angle = angle })
+    table.insert(ennemi.bullets, {x = ennemi.x, y = ennemi.y, angle = angle})
 end
 
 -- Update ennemi state
@@ -108,7 +108,7 @@ function UpdateEnnemi(pEnnemi)
         end
     end
     -- Check if the player is off the screen and if so, revert the position
-    if (ennemi.x - 30) < 0 or (ennemi.x + 30) > love.graphics.getWidth() or (ennemi.y - 30) < 0 or (ennemi.y + 30) > love.graphics.getHeight() then
+    if ennemi.x < 0 or ennemi.x > love.graphics.getWidth() or ennemi.y < 0 or ennemi.y > love.graphics.getHeight() then
         ennemi.x = prevX
         ennemi.y = prevY
     end
@@ -125,7 +125,7 @@ function ennemi.update(dt)
     UpdateEnnemi(ennemi)
     ennemi.x = ennemi.x + ennemi.vx * dt
     ennemi.y = ennemi.y + ennemi.vy * dt
-
+    
     for i, bullet in ipairs(ennemi.bullets) do
         bullet.x = bullet.x + ennemi.bulletSpeed * dt * math.cos(bullet.angle)
         bullet.y = bullet.y + ennemi.bulletSpeed * dt * math.sin(bullet.angle)
