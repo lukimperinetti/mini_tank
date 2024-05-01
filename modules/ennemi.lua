@@ -40,7 +40,7 @@ function ennemi.shoot()
     local dy = player.y - ennemi.y
     local angle = math.atan2(dy, dx)
 
-    table.insert(ennemi.bullets, {x = ennemi.x, y = ennemi.y, angle = angle})
+    table.insert(ennemi.bullets, { x = ennemi.x, y = ennemi.y, angle = angle })
 end
 
 -- Update ennemi state
@@ -90,6 +90,11 @@ function UpdateEnnemi(pEnnemi)
         pEnnemi.vy = pEnnemi.speed * 60 * math.sin(angle)
         pEnnemi.state = TSTATE.MOVE
 
+        -- Check if the player is off the screen and if so, revert the position
+        if ennemi.x < 0 or ennemi.x > love.graphics.getWidth() or ennemi.y < 0 or ennemi.y > love.graphics.getHeight() then
+            ennemi.x = prevX
+            ennemi.y = prevY
+        end
         -- difference between the target angle and the current angle
         local dx = targetX - pEnnemi.x
         local dy = targetY - pEnnemi.y
@@ -107,11 +112,6 @@ function UpdateEnnemi(pEnnemi)
             pEnnemi.angle = pEnnemi.angle + (targetAngle - pEnnemi.angle) * lerpFactor
         end
     end
-    -- Check if the player is off the screen and if so, revert the position
-    if ennemi.x < 0 or ennemi.x > love.graphics.getWidth() or ennemi.y < 0 or ennemi.y > love.graphics.getHeight() then
-        ennemi.x = prevX
-        ennemi.y = prevY
-    end
 end
 
 function ennemi.load()
@@ -125,7 +125,7 @@ function ennemi.update(dt)
     UpdateEnnemi(ennemi)
     ennemi.x = ennemi.x + ennemi.vx * dt
     ennemi.y = ennemi.y + ennemi.vy * dt
-    
+
     for i, bullet in ipairs(ennemi.bullets) do
         bullet.x = bullet.x + ennemi.bulletSpeed * dt * math.cos(bullet.angle)
         bullet.y = bullet.y + ennemi.bulletSpeed * dt * math.sin(bullet.angle)
