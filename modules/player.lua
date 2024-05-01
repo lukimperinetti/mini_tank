@@ -46,7 +46,7 @@ function player.update(dt)
     end
 
     -- Check if the player is off the screen and if so, revert the position
-    if player.x < 0 or player.x > love.graphics.getWidth() or player.y < 0 or player.y > love.graphics.getHeight() then
+    if (player.x - 30) < 0 or (player.x + 30) > love.graphics.getWidth() or (player.y - 30) < 0 or (player.y + 30) > love.graphics.getHeight() then
         player.x = prevX
         player.y = prevY
     end
