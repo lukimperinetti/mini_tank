@@ -5,7 +5,6 @@ function math.angle(x1, y1, x2, y2) return math.atan2(y2 - y1, x2 - x1) end
 function math.dist(x1, y1, x2, y2) return ((x2 - x1) ^ 2 + (y2 - y1) ^ 2) ^ 0.5 end
 
 local player = require('modules.player')
-
 local ennemi = {}
 
 -- State machine ennemi
@@ -27,6 +26,7 @@ function CreateEnnemi()
     ennemi.vy = 0
     ennemi.angle = 0
     ennemi.speed = 1
+    ennemi.score = 0
 
     ennemi.bullets = {}
     ennemi.bulletSpeed = 200
@@ -42,17 +42,6 @@ function ennemi.shoot()
     table.insert(ennemi.bullets, { x = ennemi.x, y = ennemi.y, angle = angle })
 end
 
--- Function to check collision between bullet and enemy
-function ennemi.checkCollision(x, y, width, height)
-    for i, bullet in ipairs(player.bullets) do
-        if bullet.x > x and bullet.x < x + width and
-            bullet.y > y and bullet.y < y + height then
-            table.remove(player.bullets, i) -- Remove the colliding bullet
-            return true
-        end
-    end
-    return false
-end
 
 -- Update ennemi state
 function UpdateEnnemi(pEnnemi)
@@ -127,11 +116,7 @@ function ennemi.update(dt)
         ennemi.state = TSTATE.CHANGEDIR
     end
 
-    -- Check collision with player bullets
-    if ennemi.checkCollision(ennemi.x, ennemi.y, ennemi.image:getWidth(), ennemi.image:getHeight()) then
-        player.score = player.score + 1 -- Increase player score
-        -- Additional logic if needed after collision
-    end
+
 
     for i, bullet in ipairs(ennemi.bullets) do
         bullet.x = bullet.x + ennemi.bulletSpeed * dt * math.cos(bullet.angle)

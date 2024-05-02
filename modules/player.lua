@@ -1,3 +1,9 @@
+-- Returns the angle between two vectors assuming the same origin.
+function math.angle(x1, y1, x2, y2) return math.atan2(y2 - y1, x2 - x1) end
+
+-- Returns the distance between two points
+function math.dist(x1, y1, x2, y2) return ((x2 - x1) ^ 2 + (y2 - y1) ^ 2) ^ 0.5 end
+
 local player = {}
 player.image = love.graphics.newImage("src/images/tank.png")
 player.x = love.graphics.getWidth() / 2
@@ -29,6 +35,7 @@ function player.shoot()
         player.canShoot = false
     end
 end
+
 
 function isOutOfScreen(x, y)
     return x < 0 or x > love.graphics.getWidth() or y < 0 or y > love.graphics.getHeight()
