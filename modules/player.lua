@@ -16,13 +16,25 @@ function player.load()
     print("player loaded")
 end
 
--- Function to shoot a bullets
+-- Function to shoot a bullet
 function player.shoot()
     local bullet = {}
     bullet.x = player.x
     bullet.y = player.y
     bullet.angle = player.angle - 90
     table.insert(player.bullets, bullet)
+end
+
+function player.checkCollision(enemyX, enemyY, enemyWidth, enemyHeight)
+    for i, bullet in ipairs(player.bullets) do
+        if bullet.x > enemyX and bullet.x < enemyX + enemyWidth and
+            bullet.y > enemyY and bullet.y < enemyY + enemyHeight then
+            player.score = player.score + 1 -- Increase score
+            table.remove(player.bullets, i) -- Remove the colliding bullet
+            return true
+        end
+    end
+    return false
 end
 
 function player.update(dt)

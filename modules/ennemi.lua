@@ -17,7 +17,6 @@ TSTATE.SHOT = "shot"
 TSTATE.CHANGEDIR = "changedir"
 TSTATE.DIE = "die"
 
-
 -- Create ennemi
 function CreateEnnemi()
     ennemi.image = love.graphics.newImage("src/images/ennemi.png")
@@ -43,6 +42,18 @@ function ennemi.shoot()
     table.insert(ennemi.bullets, { x = ennemi.x, y = ennemi.y, angle = angle })
 end
 
+-- Function to check collision between bullet and enemy
+function ennemi.checkCollision(x, y, width, height)
+    for i, bullet in ipairs(player.bullets) do
+        if bullet.x > x and bullet.x < x + width and
+            bullet.y > y and bullet.y < y + height then
+            table.remove(player.bullets, i) -- Remove the colliding bullet
+            return true
+        end
+    end
+    return false
+end
+
 -- Update ennemi state
 function UpdateEnnemi(pEnnemi)
     local prevX = pEnnemi.x
@@ -52,45 +63,25 @@ function UpdateEnnemi(pEnnemi)
         pEnnemi.state = TSTATE.CHANGEDIR
     elseif pEnnemi.state == TSTATE.MOVE then
         local collide = false
-        if pEnnemi.x < 0 then
-            pEnnemi.x = 0
-            collide = true
-        end
-        if pEnnemi.x > screenWidth then
-            pEnnemi.x = screenWidth
-            collide = true
-        end
-        if pEnnemi.y < 0 then
-            pEnnemi.y = 0
-            collide = true
-        end
-        if pEnnemi.y > screenHeight then
-            pEnnemi.y = screenHeight
-            collide = true
-        end
-        if collide then
-            pEnnemi.state = TSTATE.CHANGEDIR
-        end
+        -- Add collision logic as needed
 
         if math.dist(pEnnemi.x, pEnnemi.y, player.x, player.y) < 350 then
             pEnnemi.state = TSTATE.ATTACK
-            print("ennemi attack")
             ennemi.shoot()
         end
     elseif pEnnemi.state == TSTATE.ATTACK then
         if math.dist(pEnnemi.x, pEnnemi.y, player.x, player.y) > 350 then
             pEnnemi.state = TSTATE.CHANGEDIR
-            print("ennemi changedir")
         end
     elseif pEnnemi.state == TSTATE.CHANGEDIR then
-        local targetX = math.random(10, screenWidth - 10)
-        local targetY = math.random(10, screenHeight - 10)
+        local targetX = math.random(10, love.graphics.getWidth() - 10)
+        local targetY = math.random(10, love.graphics.getHeight() - 10)
         local angle = math.angle(pEnnemi.x, pEnnemi.y, targetX, targetY)
         pEnnemi.vx = pEnnemi.speed * 60 * math.cos(angle)
         pEnnemi.vy = pEnnemi.speed * 60 * math.sin(angle)
         pEnnemi.state = TSTATE.MOVE
 
-        -- Check if the player is off the screen and if so, revert the position
+        -- Check if the ennemi is off the screen and if so, revert the position
         if ennemi.x < 0 or ennemi.x > love.graphics.getWidth() or ennemi.y < 0 or ennemi.y > love.graphics.getHeight() then
             ennemi.x = prevX
             ennemi.y = prevY
@@ -101,7 +92,7 @@ function UpdateEnnemi(pEnnemi)
 
         if dx ~= 0 or dy ~= 0 then
             local targetAngle = (math.deg(math.atan2(dy, dx)) + 270) % 360
-            if math.abs(targetAngle - pEnnemi.angle) > 180 then -- if the angle is greater than 180 degrees to ensure the shortest path
+            if math.abs(targetAngle - pEnnemi.angle) > 180 then
                 if targetAngle > pEnnemi.angle then
                     targetAngle = targetAngle - 360
                 else
@@ -116,15 +107,31 @@ end
 
 function ennemi.load()
     print("ennemi loaded")
-    screenWidth = love.graphics.getWidth()
-    screenHeight = love.graphics.getHeight()
     CreateEnnemi()
 end
 
 function ennemi.update(dt)
     UpdateEnnemi(ennemi)
-    ennemi.x = ennemi.x + ennemi.vx * dt
-    ennemi.y = ennemi.y + ennemi.vy * dt
+
+    -- Limiter les déplacements de l'ennemi à l'intérieur de l'écran
+    local minX = 0
+    local maxX = love.graphics.getWidth() - ennemi.image:getWidth()
+    local minY = 0
+    local maxY = love.graphics.getHeight() - ennemi.image:getHeight()
+
+    ennemi.x = math.max(minX, math.min(ennemi.x + ennemi.vx * dt, maxX))
+    ennemi.y = math.max(minY, math.min(ennemi.y + ennemi.vy * dt, maxY))
+
+    -- Check if the ennemi touches the screen edges
+    if ennemi.x <= minX or ennemi.x >= maxX or ennemi.y <= minY or ennemi.y >= maxY then
+        ennemi.state = TSTATE.CHANGEDIR
+    end
+
+    -- Check collision with player bullets
+    if ennemi.checkCollision(ennemi.x, ennemi.y, ennemi.image:getWidth(), ennemi.image:getHeight()) then
+        player.score = player.score + 1 -- Increase player score
+        -- Additional logic if needed after collision
+    end
 
     for i, bullet in ipairs(ennemi.bullets) do
         bullet.x = bullet.x + ennemi.bulletSpeed * dt * math.cos(bullet.angle)
