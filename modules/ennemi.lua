@@ -140,7 +140,7 @@ function ennemi.update(dt)
 end
 
 function ennemi.draw()
-    love.graphics.draw(ennemi.image, ennemi.x, ennemi.y, math.rad(ennemi.angle), 1, 1, ennemi.image:getWidth(),
+    love.graphics.draw(ennemi.image, ennemi.x, ennemi.y, math.rad(ennemi.angle), 1.5, 1.5, ennemi.image:getWidth(),
         ennemi.image:getHeight())
 
     -- Draw the bullets

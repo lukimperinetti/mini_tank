@@ -7,6 +7,8 @@ player.vx = 0
 player.vy = 0
 player.angle = 0
 player.score = 0
+player.canShoot = true
+
 -- Bullets
 player.bullets = {}
 player.bulletSpeed = 200
@@ -18,23 +20,18 @@ end
 
 -- Function to shoot a bullet
 function player.shoot()
-    local bullet = {}
-    bullet.x = player.x
-    bullet.y = player.y
-    bullet.angle = player.angle - 90
-    table.insert(player.bullets, bullet)
+    if player.canShoot then
+        local bullet = {}
+        bullet.x = player.x
+        bullet.y = player.y
+        bullet.angle = player.angle - 90
+        table.insert(player.bullets, bullet)
+        player.canShoot = false
+    end
 end
 
-function player.checkCollision(enemyX, enemyY, enemyWidth, enemyHeight)
-    for i, bullet in ipairs(player.bullets) do
-        if bullet.x > enemyX and bullet.x < enemyX + enemyWidth and
-            bullet.y > enemyY and bullet.y < enemyY + enemyHeight then
-            player.score = player.score + 1 -- Increase score
-            table.remove(player.bullets, i) -- Remove the colliding bullet
-            return true
-        end
-    end
-    return false
+function isOutOfScreen(x, y)
+    return x < 0 or x > love.graphics.getWidth() or y < 0 or y > love.graphics.getHeight()
 end
 
 function player.update(dt)
@@ -63,9 +60,15 @@ function player.update(dt)
         player.y = prevY
     end
 
-    for i, bullet in ipairs(player.bullets) do
+    for i = #player.bullets, 1, -1 do
+        local bullet = player.bullets[i]
         bullet.x = bullet.x + player.bulletSpeed * dt * math.cos(math.rad(bullet.angle))
         bullet.y = bullet.y + player.bulletSpeed * dt * math.sin(math.rad(bullet.angle))
+
+        -- check if the bullet is off the screen
+        if isOutOfScreen(bullet.x, bullet.y) then
+            table.remove(player.bullets, i)
+        end
     end
 
     -- Calculate the angle of movement
@@ -84,6 +87,11 @@ function player.update(dt)
         end
         local lerpFactor = 10 * dt
         player.angle = player.angle + (targetAngle - player.angle) * lerpFactor
+    end
+
+    -- check if the player can shoot again
+    if not player.canShoot and #player.bullets == 0 then
+        player.canShoot = true -- Le joueur peut tirer à nouveau lorsque tous les missiles sont partis
     end
 end
 
