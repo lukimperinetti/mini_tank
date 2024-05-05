@@ -52,7 +52,6 @@ function UpdateEnnemi(pEnnemi)
         pEnnemi.state = TSTATE.CHANGEDIR
     elseif pEnnemi.state == TSTATE.MOVE then
         local collide = false
-        -- Add collision logic as needed
 
         if math.dist(pEnnemi.x, pEnnemi.y, player.x, player.y) < 350 then
             pEnnemi.state = TSTATE.ATTACK

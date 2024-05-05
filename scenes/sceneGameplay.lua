@@ -52,6 +52,12 @@ function sceneGameplay.update(dt)
     if ennemi.checkCollision(ennemi.x, ennemi.y, ennemi.image:getWidth(), ennemi.image:getHeight()) then
         player.score = player.score + 1 -- Increase player score
     end
+
+    -- Check if player or ennemi has reached the score limit
+    if player.score >= 10 or ennemi.score >= 10 then
+        scenesManager.changeScene('GameOver')
+    end
+
 end
 
 function sceneGameplay.draw()
